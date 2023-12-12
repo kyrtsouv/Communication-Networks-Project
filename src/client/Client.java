@@ -23,7 +23,7 @@ public class Client {
         String ip = "localhost";
         String port = "8080";
         String commandArg = "1";
-        String username = "tes2t";
+        String username = "test";
         String authToken = "test";
         String recipient = "test";
         String msgBody = "Body";
@@ -64,6 +64,9 @@ public class Client {
                     System.out.println(in.readObject());
                     break;
                 case DeleteMessage:
+                    out.writeObject(authToken);
+                    out.writeObject(msgID);
+                    System.out.println(in.readObject());
                     break;
                 default:
                     break;

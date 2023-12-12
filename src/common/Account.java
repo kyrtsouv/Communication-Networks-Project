@@ -7,13 +7,13 @@ public class Account {
     private final String username;
     private final String authToken;
     private Map<String, Message> messages;
-    private int msgIndex;
+    private int msgID;
 
     public Account(String username, String authToken) {
         this.username = username;
         this.authToken = authToken;
         this.messages = new HashMap<>();
-        this.msgIndex = 0;
+        this.msgID = 1;
     }
 
     public String getUsername() {
@@ -29,8 +29,9 @@ public class Account {
     }
 
     public void addMessage(Message message) {
-        messages.put(String.valueOf(msgIndex), message);
-        msgIndex++;
+        messages.put(String.valueOf(msgID), message);
+        message.setMsgID(String.valueOf(msgID));
+        msgID++;
     }
 
 }

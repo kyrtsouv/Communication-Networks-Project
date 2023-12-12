@@ -2,16 +2,19 @@ package common;
 
 public class Message implements java.io.Serializable {
 
-    private boolean isRead;
     private final String sender;
     private final String receiver;
     private final String body;
+    private String msgID;
+
+    private boolean isRead;
 
     public Message(String sender, String receiver, String body) {
-        this.isRead = false;
         this.sender = sender;
         this.receiver = receiver;
         this.body = body;
+
+        this.isRead = false;
     }
 
     public String getSender() {
@@ -26,11 +29,19 @@ public class Message implements java.io.Serializable {
         return body;
     }
 
+    public String getMsgID() {
+        return msgID;
+    }
+
     public boolean isRead() {
         return isRead;
     }
 
     public void setRead() {
         isRead = true;
+    }
+
+    public void setMsgID(String msgID) {
+        this.msgID = msgID;
     }
 }

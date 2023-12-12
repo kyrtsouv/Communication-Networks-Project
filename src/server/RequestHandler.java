@@ -26,7 +26,7 @@ public class RequestHandler extends Thread {
 
             Command command = (Command) in.readObject();
             String authToken = null;
-
+            String msgID = null;
             switch (command) {
                 case CreateAccount:
                     String username = (String) in.readObject();
@@ -48,10 +48,13 @@ public class RequestHandler extends Thread {
                     break;
                 case ReadMessage:
                     authToken = (String) in.readObject();
-                    String msgID = (String) in.readObject();
+                    msgID = (String) in.readObject();
                     out.writeObject(server.readMessage(authToken, msgID));
                     break;
                 case DeleteMessage:
+                    authToken = (String) in.readObject();
+                    msgID = (String) in.readObject();
+                    out.writeObject(server.deleteMessage(authToken, msgID));
                     break;
                 default:
                     break;

@@ -116,6 +116,19 @@ public class Server {
         return "(" + msg.getSender() + ") " + msg.getBody();
     }
 
+    public String deleteMessage(String authToken, String msgID) {
+        if (!accountToToken.containsValue(authToken)) {
+            return "Invalid Auth Token";
+        }
+        Account account = tokenToAccount.get(authToken);
+        Map<String, Message> messages = account.getMessages();
+        if (!messages.containsKey(msgID)) {
+            return "Message does not exist";
+        }
+        messages.remove(msgID);
+        return "OK";
+    }
+
     public static void main(String args[]) {
 
         // String port = args[0];
