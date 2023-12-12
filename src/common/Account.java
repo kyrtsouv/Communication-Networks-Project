@@ -1,28 +1,36 @@
 package common;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Account {
     private final String username;
-    private final Integer authToken;
-    private List<Message> messages;
+    private final String authToken;
+    private Map<String, Message> messages;
+    private int msgIndex;
 
-    public Account(String username, Integer authToken) {
+    public Account(String username, String authToken) {
         this.username = username;
         this.authToken = authToken;
-        this.messages = new ArrayList<>();
+        this.messages = new HashMap<>();
+        this.msgIndex = 0;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public Integer getAuthToken() {
+    public String getAuthToken() {
         return authToken;
     }
 
-    public List<Message> getMessages() {
+    public Map<String, Message> getMessages() {
         return messages;
     }
+
+    public void addMessage(Message message) {
+        messages.put(String.valueOf(msgIndex), message);
+        msgIndex++;
+    }
+
 }

@@ -2,7 +2,6 @@ package server;
 
 import common.Command;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -26,17 +25,31 @@ public class RequestHandler extends Thread {
             in = new ObjectInputStream(clientSocket.getInputStream());
 
             Command command = (Command) in.readObject();
+            String authToken = null;
 
             switch (command) {
                 case CreateAccount:
+                    String username = (String) in.readObject();
+                    out.writeObject(server.createAccount(username));
                     break;
                 case ShowAccounts:
+                    authToken = (String) in.readObject();
+                    out.writeObject(server.showAccounts(authToken));
                     break;
                 case SendMessage:
+                    authToken = (String) in.readObject();
+                    String recipient = (String) in.readObject();
+                    String msgBody = (String) in.readObject();
+                    out.writeObject(server.sendMessage(authToken, recipient, msgBody));
                     break;
                 case ShowInbox:
+                    authToken = (String) in.readObject();
+                    out.writeObject(server.showInbox(authToken));
                     break;
                 case ReadMessage:
+                    authToken = (String) in.readObject();
+                    String msgID = (String) in.readObject();
+                    out.writeObject(server.readMessage(authToken, msgID));
                     break;
                 case DeleteMessage:
                     break;
