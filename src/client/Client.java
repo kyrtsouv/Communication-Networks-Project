@@ -32,7 +32,7 @@ public class Client {
                     break;
                 case SendMessage:
                     out.writeObject(args[3]);
-                    out.writeObject(args[5]);
+                    out.writeObject(args[4]);
                     out.writeObject(args[5]);
                     System.out.println(in.readObject());
                     break;
@@ -57,5 +57,9 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        new Client(args);
     }
 }

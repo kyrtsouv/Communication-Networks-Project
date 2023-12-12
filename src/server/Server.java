@@ -59,6 +59,7 @@ public class Server {
         Account account = new Account(username, authToken);
         usernameToAccount.put(username, account);
         accountToToken.put(account, authToken);
+        tokenToAccount.put(authToken, account);
 
         return authToken;
     }
@@ -77,7 +78,7 @@ public class Server {
     }
 
     public String sendMessage(String authToken, String recipient, String msgBody) {
-        if (!accountToToken.containsValue(authToken)) {
+        if (!tokenToAccount.containsKey(authToken)) {
             return "Invalid Auth Token";
         }
         if (!usernameToAccount.containsKey(recipient)) {
@@ -130,5 +131,9 @@ public class Server {
         }
         messages.remove(msgID);
         return "OK";
+    }
+
+    public static void main(String args[]) {
+        new Server(args[0]);
     }
 }
