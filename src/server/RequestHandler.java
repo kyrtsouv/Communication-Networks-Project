@@ -27,6 +27,9 @@ public class RequestHandler extends Thread {
             Command command = (Command) in.readObject();
             String authToken = null;
             String msgID = null;
+            String recipient = null;
+            String msgBody = null;
+
             switch (command) {
                 case CreateAccount:
                     String username = (String) in.readObject();
@@ -38,8 +41,8 @@ public class RequestHandler extends Thread {
                     break;
                 case SendMessage:
                     authToken = (String) in.readObject();
-                    String recipient = (String) in.readObject();
-                    String msgBody = (String) in.readObject();
+                    recipient = (String) in.readObject();
+                    msgBody = (String) in.readObject();
                     out.writeObject(server.sendMessage(authToken, recipient, msgBody));
                     break;
                 case ShowInbox:

@@ -1,13 +1,10 @@
 package server;
 
-import common.Account;
-import common.Message;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Server {
     private Map<String, Account> usernameToAccount;
@@ -18,19 +15,25 @@ public class Server {
     private ServerSocket serverSocket = null;
 
     // implementation of constructor
-    public Server(int port) {
+    public Server(String port) {
         usernameToAccount = new HashMap<>();
         accountToToken = new HashMap<>();
         tokenToAccount = new HashMap<>();
 
         // start server and wait for a connection
         try {
-            serverSocket = new ServerSocket(port);
-
+            serverSocket = new ServerSocket(Integer.parseInt(port));
             while (true) {
-                new RequestHandler(this, serverSocket.accept()).start();
+                Socket socket = serverSocket.accept();
+                new RequestHandler(this, socket).start();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            serverSocket.close();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -127,14 +130,5 @@ public class Server {
         }
         messages.remove(msgID);
         return "OK";
-    }
-
-    public static void main(String args[]) {
-
-        // String port = args[0];
-
-        String port = "8080";
-
-        new Server(Integer.parseInt(port));
     }
 }

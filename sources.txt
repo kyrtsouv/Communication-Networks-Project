@@ -1,6 +1,0 @@
-C:\Programming\Java\Communication_Networks_Project\src\client\Client.java
-C:\Programming\Java\Communication_Networks_Project\src\common\Account.java
-C:\Programming\Java\Communication_Networks_Project\src\common\Command.java
-C:\Programming\Java\Communication_Networks_Project\src\common\Message.java
-C:\Programming\Java\Communication_Networks_Project\src\server\RequestHandler.java
-C:\Programming\Java\Communication_Networks_Project\src\server\Server.java

@@ -7,65 +7,47 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class Client {
-    public static void main(String[] args) {
+    Client(String[] args) {
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
 
-        // String ip = args[1];
-        // String port = args[2];
-        // String command = args[3];
-        // String username = args[4];
-        // String authToken = args[4];
-        // String recipient = args[5];
-        // String msgID = args[5];
-        // String msgBody = args[6];
-
-        String ip = "localhost";
-        String port = "8080";
-        String commandArg = "1";
-        String username = "test";
-        String authToken = "test";
-        String recipient = "test";
-        String msgBody = "Body";
-        String msgID = "1";
-
-        try (Socket socket = new Socket(ip, Integer.parseInt(port))) {
+        try (Socket socket = new Socket(args[0], Integer.parseInt(args[1]))) {
 
             // get the outputstream of client
             out = new ObjectOutputStream(socket.getOutputStream());
             // get the inputstream of client
             in = new ObjectInputStream(socket.getInputStream());
 
-            Command command = Command.values()[Integer.parseInt(commandArg)];
+            Command command = Command.values()[Integer.parseInt(args[2])];
 
             out.writeObject(command);
             switch (command) {
                 case CreateAccount:
-                    out.writeObject(username);
+                    out.writeObject(args[3]);
                     System.out.println(in.readObject());
                     break;
                 case ShowAccounts:
-                    out.writeObject(authToken);
+                    out.writeObject(args[3]);
                     System.out.println(in.readObject());
                     break;
                 case SendMessage:
-                    out.writeObject(authToken);
-                    out.writeObject(recipient);
-                    out.writeObject(msgBody);
+                    out.writeObject(args[3]);
+                    out.writeObject(args[5]);
+                    out.writeObject(args[5]);
                     System.out.println(in.readObject());
                     break;
                 case ShowInbox:
-                    out.writeObject(authToken);
+                    out.writeObject(args[3]);
                     System.out.println(in.readObject());
                     break;
                 case ReadMessage:
-                    out.writeObject(authToken);
-                    out.writeObject(msgID);
+                    out.writeObject(args[3]);
+                    out.writeObject(args[4]);
                     System.out.println(in.readObject());
                     break;
                 case DeleteMessage:
-                    out.writeObject(authToken);
-                    out.writeObject(msgID);
+                    out.writeObject(args[3]);
+                    out.writeObject(args[4]);
                     System.out.println(in.readObject());
                     break;
                 default:
@@ -75,6 +57,5 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }
