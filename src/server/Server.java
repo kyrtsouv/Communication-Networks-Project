@@ -11,16 +11,13 @@ public class Server {
     private Map<Account, String> accountToToken;
     private Map<String, Account> tokenToAccount;
 
-    // initialization of socket and input stream
     private ServerSocket serverSocket = null;
 
-    // implementation of constructor
     public Server(String port) {
         usernameToAccount = new HashMap<>();
         accountToToken = new HashMap<>();
         tokenToAccount = new HashMap<>();
 
-        // start server and wait for a connection
         try {
             serverSocket = new ServerSocket(Integer.parseInt(port));
             while (true) {

@@ -19,9 +19,7 @@ public class RequestHandler extends Thread {
         ObjectOutputStream out = null;
         ObjectInputStream in = null;
         try {
-            // get the outputstream of client
             out = new ObjectOutputStream(clientSocket.getOutputStream());
-            // get the inputstream of client
             in = new ObjectInputStream(clientSocket.getInputStream());
 
             Command command = (Command) in.readObject();

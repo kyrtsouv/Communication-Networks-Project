@@ -13,9 +13,7 @@ public class Client {
 
         try (Socket socket = new Socket(args[0], Integer.parseInt(args[1]))) {
 
-            // get the outputstream of client
             out = new ObjectOutputStream(socket.getOutputStream());
-            // get the inputstream of client
             in = new ObjectInputStream(socket.getInputStream());
 
             Command command = Command.values()[Integer.parseInt(args[2])];
