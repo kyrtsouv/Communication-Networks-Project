@@ -1,61 +1,59 @@
 package server;
 
-import common.Command;
-
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 
 public class RequestHandler extends Thread {
     private final Socket clientSocket;
-    private final Server server;
+    private final Database db;
 
-    public RequestHandler(Server server, Socket socket) {
-        this.server = server;
+    public RequestHandler(Database db, Socket socket) {
+        this.db = db;
         this.clientSocket = socket;
     }
 
     public void run() {
-        ObjectOutputStream out = null;
-        ObjectInputStream in = null;
+        DataOutputStream out = null;
+        DataInputStream in = null;
         try {
-            out = new ObjectOutputStream(clientSocket.getOutputStream());
-            in = new ObjectInputStream(clientSocket.getInputStream());
+            out = new DataOutputStream(clientSocket.getOutputStream());
+            in = new DataInputStream(clientSocket.getInputStream());
 
-            Command command = (Command) in.readObject();
+            Integer command = in.readInt();
             String authToken = null;
             String msgID = null;
             String recipient = null;
             String msgBody = null;
 
             switch (command) {
-                case CreateAccount:
-                    String username = (String) in.readObject();
-                    out.writeObject(server.createAccount(username));
+                case 1:
+                    String username = in.readUTF();
+                    out.writeUTF(db.createAccount(username));
                     break;
-                case ShowAccounts:
-                    authToken = (String) in.readObject();
-                    out.writeObject(server.showAccounts(authToken));
+                case 2:
+                    authToken = in.readUTF();
+                    out.writeUTF(db.showAccounts(authToken));
                     break;
-                case SendMessage:
-                    authToken = (String) in.readObject();
-                    recipient = (String) in.readObject();
-                    msgBody = (String) in.readObject();
-                    out.writeObject(server.sendMessage(authToken, recipient, msgBody));
+                case 3:
+                    authToken = in.readUTF();
+                    recipient = in.readUTF();
+                    msgBody = in.readUTF();
+                    out.writeUTF(db.sendMessage(authToken, recipient, msgBody));
                     break;
-                case ShowInbox:
-                    authToken = (String) in.readObject();
-                    out.writeObject(server.showInbox(authToken));
+                case 4:
+                    authToken = in.readUTF();
+                    out.writeUTF(db.showInbox(authToken));
                     break;
-                case ReadMessage:
-                    authToken = (String) in.readObject();
-                    msgID = (String) in.readObject();
-                    out.writeObject(server.readMessage(authToken, msgID));
+                case 5:
+                    authToken = in.readUTF();
+                    msgID = in.readUTF();
+                    out.writeUTF(db.readMessage(authToken, msgID));
                     break;
-                case DeleteMessage:
-                    authToken = (String) in.readObject();
-                    msgID = (String) in.readObject();
-                    out.writeObject(server.deleteMessage(authToken, msgID));
+                case 6:
+                    authToken = in.readUTF();
+                    msgID = in.readUTF();
+                    out.writeUTF(db.deleteMessage(authToken, msgID));
                     break;
                 default:
                     break;

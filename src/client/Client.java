@@ -1,52 +1,50 @@
 package client;
 
-import common.Command;
-
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
 
 public class Client {
     Client(String[] args) {
-        ObjectOutputStream out = null;
-        ObjectInputStream in = null;
+        DataOutputStream out = null;
+        DataInputStream in = null;
 
         try (Socket socket = new Socket(args[0], Integer.parseInt(args[1]))) {
 
-            out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());
+            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());
 
-            Command command = Command.values()[Integer.parseInt(args[2])];
+            Integer command = Integer.parseInt(args[2]);
 
-            out.writeObject(command);
+            out.writeInt(command);
             switch (command) {
-                case CreateAccount:
-                    out.writeObject(args[3]);
-                    System.out.println(in.readObject());
+                case 1:
+                    out.writeUTF(args[3]);
+                    System.out.println(in.readUTF());
                     break;
-                case ShowAccounts:
-                    out.writeObject(args[3]);
-                    System.out.println(in.readObject());
+                case 2:
+                    out.writeUTF(args[3]);
+                    System.out.println(in.readUTF());
                     break;
-                case SendMessage:
-                    out.writeObject(args[3]);
-                    out.writeObject(args[4]);
-                    out.writeObject(args[5]);
-                    System.out.println(in.readObject());
+                case 3:
+                    out.writeUTF(args[3]);
+                    out.writeUTF(args[4]);
+                    out.writeUTF(args[5]);
+                    System.out.println(in.readUTF());
                     break;
-                case ShowInbox:
-                    out.writeObject(args[3]);
-                    System.out.println(in.readObject());
+                case 4:
+                    out.writeUTF(args[3]);
+                    System.out.println(in.readUTF());
                     break;
-                case ReadMessage:
-                    out.writeObject(args[3]);
-                    out.writeObject(args[4]);
-                    System.out.println(in.readObject());
+                case 5:
+                    out.writeUTF(args[3]);
+                    out.writeUTF(args[4]);
+                    System.out.println(in.readUTF());
                     break;
-                case DeleteMessage:
-                    out.writeObject(args[3]);
-                    out.writeObject(args[4]);
-                    System.out.println(in.readObject());
+                case 6:
+                    out.writeUTF(args[3]);
+                    out.writeUTF(args[4]);
+                    System.out.println(in.readUTF());
                     break;
                 default:
                     break;
