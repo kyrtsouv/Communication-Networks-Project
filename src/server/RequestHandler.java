@@ -21,38 +21,39 @@ public class RequestHandler extends Thread {
             in = new DataInputStream(clientSocket.getInputStream());
 
             Integer command = in.readInt();
-            String authToken = null;
-            String msgID = null;
-            String recipient = null;
-            String msgBody = null;
+            Integer authToken;
+            Integer msgID;
+            String recipient;
+            String username;
+            String msgBody;
 
             switch (command) {
                 case 1:
-                    String username = in.readUTF();
+                    username = in.readUTF();
                     out.writeUTF(db.createAccount(username));
                     break;
                 case 2:
-                    authToken = in.readUTF();
+                    authToken = Integer.parseInt(in.readUTF());
                     out.writeUTF(db.showAccounts(authToken));
                     break;
                 case 3:
-                    authToken = in.readUTF();
+                    authToken = Integer.parseInt(in.readUTF());
                     recipient = in.readUTF();
                     msgBody = in.readUTF();
                     out.writeUTF(db.sendMessage(authToken, recipient, msgBody));
                     break;
                 case 4:
-                    authToken = in.readUTF();
+                    authToken = Integer.parseInt(in.readUTF());
                     out.writeUTF(db.showInbox(authToken));
                     break;
                 case 5:
-                    authToken = in.readUTF();
-                    msgID = in.readUTF();
+                    authToken = Integer.parseInt(in.readUTF());
+                    msgID = Integer.parseInt(in.readUTF());
                     out.writeUTF(db.readMessage(authToken, msgID));
                     break;
                 case 6:
-                    authToken = in.readUTF();
-                    msgID = in.readUTF();
+                    authToken = Integer.parseInt(in.readUTF());
+                    msgID = Integer.parseInt(in.readUTF());
                     out.writeUTF(db.deleteMessage(authToken, msgID));
                     break;
                 default:

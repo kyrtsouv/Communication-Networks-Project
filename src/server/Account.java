@@ -5,11 +5,12 @@ import java.util.Map;
 
 public class Account {
     private final String username;
-    private final String authToken;
-    private Map<String, Message> messages;
+    private final Integer authToken;
+
+    private Map<Integer, Message> messages;
     private int msgID;
 
-    public Account(String username, String authToken) {
+    public Account(String username, Integer authToken) {
         this.username = username;
         this.authToken = authToken;
         this.messages = new HashMap<>();
@@ -20,18 +21,20 @@ public class Account {
         return username;
     }
 
-    public String getAuthToken() {
+    public Integer getAuthToken() {
         return authToken;
     }
 
-    public Map<String, Message> getMessages() {
+    public Map<Integer, Message> getMessages() {
         return messages;
     }
 
+    public Integer getMsgID() {
+        return msgID++;
+    }
+
     public void addMessage(Message message) {
-        messages.put(String.valueOf(msgID), message);
-        message.setMsgID(String.valueOf(msgID));
-        msgID++;
+        messages.put(msgID, message);
     }
 
 }

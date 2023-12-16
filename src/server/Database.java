@@ -1,18 +1,24 @@
 package server;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.HashMap;
 
 public class Database {
     private Map<String, Account> usernameToAccount;
-    private Map<Account, String> accountToToken;
-    private Map<String, Account> tokenToAccount;
+    private Map<Account, Integer> accountToToken;
+    private Map<Integer, Account> tokenToAccount;
+
+    private Integer nextUserAuthToken;
 
     public Database() {
         usernameToAccount = new HashMap<>();
         accountToToken = new HashMap<>();
         tokenToAccount = new HashMap<>();
+        nextUserAuthToken = 1;
+    }
+
+    private Integer getAuthToken() {
+        return nextUserAuthToken++;
     }
 
     public String createAccount(String username) {
@@ -23,25 +29,21 @@ public class Database {
             return "Invalid username";
         }
         for (char c : username.toCharArray()) {
-            if (!Character.isLetter(c) && c != '_') {
+            if (!Character.isLetterOrDigit(c) && c != '_') {
                 return "Invalid username";
             }
         }
 
-        String authToken;
-        do {
-            authToken = UUID.randomUUID().toString();
-        } while (accountToToken.containsValue(authToken));
-
+        Integer authToken = getAuthToken();
         Account account = new Account(username, authToken);
         usernameToAccount.put(username, account);
         accountToToken.put(account, authToken);
         tokenToAccount.put(authToken, account);
 
-        return authToken;
+        return String.valueOf(authToken);
     }
 
-    public String showAccounts(String authToken) {
+    public String showAccounts(Integer authToken) {
         if (!accountToToken.containsValue(authToken)) {
             return "Invalid Auth Token";
         }
@@ -54,7 +56,7 @@ public class Database {
         return response;
     }
 
-    public String sendMessage(String authToken, String recipient, String msgBody) {
+    public String sendMessage(Integer authToken, String recipient, String msgBody) {
         if (!tokenToAccount.containsKey(authToken)) {
             return "Invalid Auth Token";
         }
@@ -63,32 +65,32 @@ public class Database {
         }
         Account sender = tokenToAccount.get(authToken);
         Account receiver = usernameToAccount.get(recipient);
-        Message message = new Message(sender.getUsername(), receiver.getUsername(), msgBody);
+        Message message = new Message(sender.getUsername(), receiver.getUsername(), msgBody, receiver.getMsgID());
 
         receiver.addMessage(message);
         return "OK";
     }
 
-    public String showInbox(String authToken) {
+    public String showInbox(Integer authToken) {
         if (!accountToToken.containsValue(authToken)) {
             return "Invalid Auth Token";
         }
         Account account = tokenToAccount.get(authToken);
         String response = "";
-        Map<String, Message> messages = account.getMessages();
-        for (String msgIndex : messages.keySet()) {
+        Map<Integer, Message> messages = account.getMessages();
+        for (Integer msgIndex : messages.keySet()) {
             Message msg = messages.get(msgIndex);
             response += msgIndex + ". " + "from: " + msg.getSender() + (!msg.isRead() ? "*" : "") + "\n";
         }
         return response;
     }
 
-    public String readMessage(String authToken, String msgID) {
+    public String readMessage(Integer authToken, Integer msgID) {
         if (!accountToToken.containsValue(authToken)) {
             return "Invalid Auth Token";
         }
         Account account = tokenToAccount.get(authToken);
-        Map<String, Message> messages = account.getMessages();
+        Map<Integer, Message> messages = account.getMessages();
         if (!messages.containsKey(msgID)) {
             return "Message ID does not exist";
         }
@@ -97,12 +99,12 @@ public class Database {
         return "(" + msg.getSender() + ") " + msg.getBody();
     }
 
-    public String deleteMessage(String authToken, String msgID) {
+    public String deleteMessage(Integer authToken, Integer msgID) {
         if (!accountToToken.containsValue(authToken)) {
             return "Invalid Auth Token";
         }
         Account account = tokenToAccount.get(authToken);
-        Map<String, Message> messages = account.getMessages();
+        Map<Integer, Message> messages = account.getMessages();
         if (!messages.containsKey(msgID)) {
             return "Message does not exist";
         }
