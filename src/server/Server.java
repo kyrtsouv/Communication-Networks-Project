@@ -1,7 +1,6 @@
 package server;
 
 import java.net.ServerSocket;
-import java.net.Socket;
 
 public class Server {
 
@@ -13,8 +12,7 @@ public class Server {
         try {
             serverSocket = new ServerSocket(Integer.parseInt(port));
             while (true) {
-                Socket socket = serverSocket.accept();
-                new RequestHandler(db, socket).start();
+                new RequestHandler(db, serverSocket.accept()).start();
             }
         } catch (Exception e) {
             e.printStackTrace();

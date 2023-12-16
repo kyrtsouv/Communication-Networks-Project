@@ -2,6 +2,7 @@ package server;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 public class Database {
     private Map<String, Account> usernameToAccount;
@@ -17,10 +18,6 @@ public class Database {
         nextUserAuthToken = 1;
     }
 
-    private Integer getAuthToken() {
-        return nextUserAuthToken++;
-    }
-
     public String createAccount(String username) {
         if (usernameToAccount.containsKey(username)) {
             return "Sorry, the user already exists";
@@ -34,7 +31,7 @@ public class Database {
             }
         }
 
-        Integer authToken = getAuthToken();
+        Integer authToken = nextUserAuthToken++;
         Account account = new Account(username, authToken);
         usernameToAccount.put(username, account);
         accountToToken.put(account, authToken);
@@ -77,10 +74,9 @@ public class Database {
         }
         Account account = tokenToAccount.get(authToken);
         String response = "";
-        Map<Integer, Message> messages = account.getMessages();
-        for (Integer msgIndex : messages.keySet()) {
-            Message msg = messages.get(msgIndex);
-            response += msgIndex + ". " + "from: " + msg.getSender() + (!msg.isRead() ? "*" : "") + "\n";
+        List<Message> messages = account.getMessageBox();
+        for (Message msg : messages) {
+            response += msg.getID() + ". " + "from: " + msg.getSender() + (!msg.isRead() ? "*" : "") + "\n";
         }
         return response;
     }
@@ -90,13 +86,14 @@ public class Database {
             return "Invalid Auth Token";
         }
         Account account = tokenToAccount.get(authToken);
-        Map<Integer, Message> messages = account.getMessages();
-        if (!messages.containsKey(msgID)) {
-            return "Message ID does not exist";
+        List<Message> messages = account.getMessageBox();
+        for (Message msg : messages) {
+            if (msg.getID().equals(msgID)) {
+                msg.setRead();
+                return "(" + msg.getSender() + ") " + msg.getBody();
+            }
         }
-        Message msg = messages.get(msgID);
-        msg.setRead();
-        return "(" + msg.getSender() + ") " + msg.getBody();
+        return "Message ID does not exist";
     }
 
     public String deleteMessage(Integer authToken, Integer msgID) {
@@ -104,11 +101,13 @@ public class Database {
             return "Invalid Auth Token";
         }
         Account account = tokenToAccount.get(authToken);
-        Map<Integer, Message> messages = account.getMessages();
-        if (!messages.containsKey(msgID)) {
-            return "Message does not exist";
+        List<Message> messages = account.getMessageBox();
+        for (Message msg : messages) {
+            if (msg.getID().equals(msgID)) {
+                messages.remove(msg);
+                return "OK";
+            }
         }
-        messages.remove(msgID);
-        return "OK";
+        return "Message does not exist";
     }
 }

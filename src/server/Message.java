@@ -5,7 +5,7 @@ public class Message implements java.io.Serializable {
     private final String sender;
     private final String receiver;
     private final String body;
-    private final String msgID;
+    private final Integer ID;
 
     private boolean isRead;
 
@@ -13,7 +13,7 @@ public class Message implements java.io.Serializable {
         this.sender = sender;
         this.receiver = receiver;
         this.body = body;
-        this.msgID = String.valueOf(msgID);
+        this.ID = msgID;
 
         this.isRead = false;
     }
@@ -30,8 +30,8 @@ public class Message implements java.io.Serializable {
         return body;
     }
 
-    public String getMsgID() {
-        return msgID;
+    public Integer getID() {
+        return ID;
     }
 
     public boolean isRead() {
