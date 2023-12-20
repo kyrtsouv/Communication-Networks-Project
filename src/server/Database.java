@@ -23,11 +23,11 @@ public class Database {
             return "Sorry, the user already exists";
         }
         if (username.length() == 0) {
-            return "Invalid username";
+            return "Invalid Username";
         }
         for (char c : username.toCharArray()) {
             if (!Character.isLetterOrDigit(c) && c != '_') {
-                return "Invalid username";
+                return "Invalid Username";
             }
         }
 
@@ -47,8 +47,7 @@ public class Database {
         String response = "";
         int index = 1;
         for (Account account : accountToToken.keySet()) {
-            response += index + ". " + account.getUsername() + "\n";
-            index++;
+            response += (index++) + ". " + account.getUsername() + "\n";
         }
         return response;
     }
@@ -90,7 +89,7 @@ public class Database {
         for (Message msg : messages) {
             if (msg.getID().equals(msgID)) {
                 msg.setRead();
-                return "(" + msg.getSender() + ") " + msg.getBody();
+                return "(" + msg.getSender() + ")" + msg.getBody();
             }
         }
         return "Message ID does not exist";
